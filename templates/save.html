@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Liver Cirrhosis Predictor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Modern Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(120deg, #e0f7fa 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+        .main-card {
+            max-width: 750px;
+            margin: 48px auto 0 auto;
+            border-radius: 2rem;
+            box-shadow: 0 4px 32px rgba(41, 182, 246, 0.08), 0 1.5px 12px rgba(76,175,80,0.02);
+            background: #fff;
+        }
+        .navbar {
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+        }
+        .navbar-brand img {
+            height: 34px;
+            margin-right: 12px;
+            filter: drop-shadow(0 2px 4px #26c6da66);
+        }
+        .nav-link.active, .nav-link:focus, .nav-link:hover {
+            color: #2196f3 !important;
+            font-weight: bold;
+        }
+        .form-section-title {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 18px;
+            font-size: 1.13em;
+            letter-spacing: 0.01em;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(33,150,243,0.02);
+        }
+        .btn-primary, .btn-success {
+            background: linear-gradient(90deg, #29b6f6, #26c6da 80%);
+            border: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover, .btn-success:hover {
+            background: linear-gradient(90deg, #26c6da, #29b6f6 80%);
+            box-shadow: 0 2px 16px rgba(41,182,246,0.12);
+        }
+        .result-section .alert {
+            border-radius: 14px;
+            box-shadow: 0 2px 8px #43a04722;
+        }
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 4px 16px #b2ebf2cc;
+        }
+        .card-header {
+            border-radius: 20px 20px 0 0 !important;
+            font-weight: 600;
+        }
+        footer {
+            background: #263238;
+            color: #fff;
+            padding: 18px 0 10px 0;
+            margin-top: 56px;
+            border-radius: 28px 28px 0 0;
+            font-size: 1.06em;
+            letter-spacing: 0.01em;
+        }
+        @media (max-width: 600px) {
+            .main-card { margin: 12px 0; border-radius: 1rem; }
+            .form-section-title { font-size: 1em; }
+            footer { border-radius: 18px 18px 0 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="https://cdn-icons-png.flaticon.com/512/3300/3300829.png" alt="Logo">
+                <span>Liver Cirrhosis ML</span>
+            </a>
+            <div class="navbar-nav">
+                <a class="nav-link active" href="/">Predict</a>
+                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="/modelinfo">Model Info</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-card p-4 shadow">
+        <h2 class="text-center text-primary mb-3">Liver Cirrhosis Prediction</h2>
+        <p class="text-center text-muted mb-4">Enter patient details below. <b>All fields are required.</b></p>
+        <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="autofillBtn">
+                <i class="bi bi-lightning-charge"></i> Autofill Example Patient
+            </button>
+        </div>
+        <!-- Form Start -->
+        <form method="POST" action="/predict" id="predictForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control" name="Age" min="1" max="120" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Gender</label>
+                    <select class="form-select" name="Gender" required>
+                        <option value="">Select</option>
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
+                        <option value="2">Transgender</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Place</label>
+                    <select class="form-select" name="Place(location where the patient lives)" required>
+                        <option value="">Select</option>
+                        <option value="0">Rural</option>
+                        <option value="1">Urban</option>
+                        <option value="2">Unknown</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Alcohol (years)</label>
+                    <input type="number" class="form-control" name="Duration of alcohol consumption(years)" min="0" max="80" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Alcohol (quarters/day)</label>
+                    <input type="number" class="form-control" name="Quantity of alcohol consumption (quarters/day)" min="0" max="10" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Type of Alcohol</label>
+                    <select class="form-select" name="Type of alcohol consumed" required>
+                        <option value="">Select</option>
+                        <option value="0">Branded Liquor</option>
+                        <option value="1">Both</option>
+                        <option value="2">Country Liquor</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Hepatitis B Infection</label>
+                    <select class="form-select" name="Hepatitis B infection" required>
+                        <option value="">Select</option>
+                        <option value="0">Negative</option>
+                        <option value="1">Positive</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Hepatitis C Infection</label>
+                    <select class="form-select" name="Hepatitis C infection" required>
+                        <option value="">Select</option>
+                        <option value="0">Negative</option>
+                        <option value="1">Positive</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Diabetes</label>
+                    <select class="form-select" name="Diabetes Result" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Blood Pressure (mmHg)</label>
+                    <input type="number" class="form-control" name="Blood pressure (mmhg)" min="50" max="250" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Obesity</label>
+                    <select class="form-select" name="Obesity" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Family History of Cirrhosis/Hereditary</label>
+                    <select class="form-select" name="Family history of cirrhosis/ hereditary" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                        <option value="2">Unknown</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">TCH</label>
+                    <input type="number" class="form-control" name="TCH" min="50" max="500" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">TG</label>
+                    <input type="number" class="form-control" name="TG" min="10" max="500" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">LDL</label>
+                    <input type="number" class="form-control" name="LDL" min="10" max="400" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">HDL</label>
+                    <input type="number" class="form-control" name="HDL" min="5" max="200" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Hemoglobin (g/dl)</label>
+                    <input type="number" class="form-control" name="Hemoglobin  (g/dl)" min="2" max="20" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">PCV (%)</label>
+                    <input type="number" class="form-control" name="PCV  (%)" min="10" max="70" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">MCV (femtoliters/cell)</label>
+                    <input type="number" class="form-control" name="MCV   (femtoliters/cell)" min="30" max="130" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Total Count</label>
+                    <input type="number" class="form-control" name="Total Count" min="1000" max="20000" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Polymorphs (%)</label>
+                    <input type="number" class="form-control" name="Polymorphs  (%) " min="10" max="90" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Lymphocytes (%)</label>
+                    <input type="number" class="form-control" name="Lymphocytes  (%)" min="5" max="60" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Monocytes (%)</label>
+                    <input type="number" class="form-control" name="Monocytes   (%)" min="0" max="15" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Eosinophils (%)</label>
+                    <input type="number" class="form-control" name="Eosinophils   (%)" min="0" max="10" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Basophils (%)</label>
+                    <input type="number" class="form-control" name="Basophils  (%)" min="0" max="2" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Platelet Count (lakhs/mm)</label>
+                    <input type="number" class="form-control" name="Platelet Count  (lakhs/mm)" min="0.5" max="10" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Total Bilirubin (mg/dl)</label>
+                    <input type="number" class="form-control" name="Total Bilirubin    (mg/dl)" min="0.1" max="50" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Direct (mg/dl)</label>
+                    <input type="number" class="form-control" name="Direct    (mg/dl)" min="0" max="20" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Indirect (mg/dl)</label>
+                    <input type="number" class="form-control" name="Indirect     (mg/dl)" min="0" max="30" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Total Protein (g/dl)</label>
+                    <input type="number" class="form-control" name="Total Protein     (g/dl)" min="3" max="12" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Albumin (g/dl)</label>
+                    <input type="number" class="form-control" name="Albumin   (g/dl)" min="1" max="7" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Globulin (g/dl)</label>
+                    <input type="number" class="form-control" name="Globulin  (g/dl)" min="1" max="7" step="0.01" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">AL.Phosphatase (U/L)</label>
+                    <input type="number" class="form-control" name="AL.Phosphatase      (U/L)" min="20" max="1200" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SGOT/AST (U/L)</label>
+                    <input type="number" class="form-control" name="SGOT/AST      (U/L)" min="10" max="1200" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SGPT/ALT (U/L)</label>
+                    <input type="number" class="form-control" name="SGPT/ALT (U/L)" min="10" max="1200" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">USG Abdomen (diffuse liver or not)</label>
+                    <select class="form-select" name="USG Abdomen (diffuse liver or  not)" required>
+                        <option value="">Select</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                        <option value="2">Unknown</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success btn-lg mt-3 w-100" id="predictBtn">
+                <span id="btnText">Predict</span>
+                <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner"></span>
+            </button>
+        </form>
+        <div class="result-section text-center">
+            {% if prediction_text %}
+                <div class="alert alert-info mt-4" role="alert">
+                    <h4>{{ prediction_text }}</h4>
+                </div>
+                <button type="button" id="downloadReportBtn" class="btn btn-outline-secondary mt-2">
+                    <i class="bi bi-file-earmark-pdf"></i> Download/Print Report
+                </button>
+            {% endif %}
+        </div>
+        <div class="mt-4 text-center text-muted" style="font-size: 0.96em;">
+            <i class="bi bi-lightbulb"></i> All data is private and never saved.
+        </div>
+        <!-- Feature Importance Chart -->
+        <div class="card mt-5" id="featImportanceSection">
+            <div class="card-header bg-primary text-white">
+                <b>Top Features Influencing Model</b>
+            </div>
+            <div class="card-body">
+                <canvas id="featureImportanceChart" style="max-height:300px"></canvas>
+            </div>
+        </div>
+        <!-- Input Visualizations (Liver Enzyme Chart) -->
+        <div class="card mt-4" id="inputVizCard">
+            <div class="card-header bg-secondary text-white">
+                <b>Liver Enzyme Levels</b>
+            </div>
+            <div class="card-body">
+                <canvas id="inputVizChart" style="max-height:260px"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Autofill Example Patient Button
+    document.getElementById("autofillBtn").onclick = function() {
+        const example = {
+            "Age": 52, "Gender": "0", "Place(location where the patient lives)": "1",
+            "Duration of alcohol consumption(years)": 20, "Quantity of alcohol consumption (quarters/day)": 2,
+            "Type of alcohol consumed": "0", "Hepatitis B infection": "0", "Hepatitis C infection": "0",
+            "Diabetes Result": "0", "Blood pressure (mmhg)": 110, "Obesity": "0",
+            "Family history of cirrhosis/ hereditary": "1", "TCH": 180, "TG": 120, "LDL": 90, "HDL": 44,
+            "Hemoglobin  (g/dl)": 12, "PCV  (%)": 36, "MCV   (femtoliters/cell)": 80, "Total Count": 5000,
+            "Polymorphs  (%) ": 60, "Lymphocytes  (%)": 30, "Monocytes   (%)": 5, "Eosinophils   (%)": 2,
+            "Basophils  (%)": 1, "Platelet Count  (lakhs/mm)": 2.0, "Total Bilirubin    (mg/dl)": 0.7,
+            "Direct    (mg/dl)": 0.2, "Indirect     (mg/dl)": 0.5, "Total Protein     (g/dl)": 6.5,
+            "Albumin   (g/dl)": 3.5, "Globulin  (g/dl)": 3.0, "AL.Phosphatase      (U/L)": 78,
+            "SGOT/AST      (U/L)": 36, "SGPT/ALT (U/L)": 38, "USG Abdomen (diffuse liver or  not)": "0"
+        };
+        Object.entries(example).forEach(([name, value]) => {
+            let input = document.querySelector(`[name="${name}"]`);
+            if (input) input.value = value;
+        });
+    };
+    // Spinner on submit
+    document.getElementById('predictForm').onsubmit = function() {
+        document.getElementById('btnText').innerText = "Predicting...";
+        document.getElementById('loadingSpinner').classList.remove("d-none");
+        setTimeout(showInputChart, 800);
+    };
+    // PDF/Print Report
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById("downloadReportBtn");
+        if (btn) {
+            btn.onclick = function() {
+                let rows = '';
+                document.querySelectorAll('form [name]').forEach(input => {
+                    let label = input.closest('.mb-3')?.querySelector('.form-label')?.innerText || input.name;
+                    rows += `<tr><td>${label}</td><td>${input.value}</td></tr>`;
+                });
+                let prediction = document.querySelector('.alert-info h4')?.innerText || '';
+                let now = new Date().toLocaleString();
+                let html = `
+                    <html>
+                    <head>
+                        <title>Liver Cirrhosis Prediction Report</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    </head>
+                    <body class="p-4">
+                        <h2 class="mb-3">Liver Cirrhosis Prediction Report</h2>
+                        <p><b>Generated:</b> ${now}</p>
+                        <hr>
+                        <h4>Prediction:</h4>
+                        <div class="alert alert-info">${prediction}</div>
+                        <h5>Patient Data:</h5>
+                        <table class="table table-bordered table-sm w-75">
+                            <tbody>${rows}</tbody>
+                        </table>
+                        <hr>
+                        <p class="small text-muted">Model: XGBoost Ensemble | Project by [Your Name]</p>
+                    </body>
+                    </html>
+                `;
+                let w = window.open('', '_blank');
+                w.document.write(html);
+                w.document.close();
+                setTimeout(() => w.print(), 500);
+            };
+        }
+    });
+    // Feature Importance Chart (top 10)
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if feat_importance %}
+            const feat_importance = {{ feat_importance|tojson }};
+            const sortedFeat = Object.entries(feat_importance).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            const labels = sortedFeat.map(x=>x[0]);
+            const data = sortedFeat.map(x=>x[1]);
+            const ctx = document.getElementById('featureImportanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: 'Importance', data: data, backgroundColor: '#2196f3' }]
+                },
+                options: { indexAxis: 'y', scales: { x: { beginAtZero: true } } }
+            });
+        {% endif %}
+    });
+    // Input Visualizations: Liver Enzyme Chart
+    function showInputChart() {
+        const fields = [
+            "AL.Phosphatase      (U/L)",
+            "SGOT/AST      (U/L)",
+            "SGPT/ALT (U/L)"
+        ];
+        const values = fields.map(f => document.querySelector(`[name="${f}"]`).value);
+        if (values.every(v=>v)) {
+            const ctx = document.getElementById('inputVizChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Alkaline Phosphatase", "SGOT/AST", "SGPT/ALT"],
+                    datasets: [{
+                        label: "Value",
+                        data: values,
+                        backgroundColor: ['#43a047','#fbc02d','#e53935']
+                    }]
+                },
+                options: { scales: { y: { beginAtZero:true }} }
+            });
+        }
+    }
+    </script>
+    <footer class="text-center">
+        <div>Made with ❤️ for the Liver Cirrhosis ML Project &copy; {{ 2024 }}</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

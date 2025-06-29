@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}About | Liver Cirrhosis ML{% endblock %}
+{% block content %}
+<div class="main-card shadow p-4" data-aos="fade-up">
+    <div class="row align-items-center">
+        <div class="col-md-2 text-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/3300/3300829.png" class="team-avatar mb-2" alt="Project Logo" style="width: 72px; height: 72px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="col-md-10">
+            <h2>About This Project</h2>
+            <div class="mb-2">
+                <span class="badge bg-primary">Healthcare</span>
+                <span class="badge bg-primary">AI/ML</span>
+                <span class="badge bg-primary">Flask App</span>
+            </div>
+            <p>
+                This project leverages advanced machine learning to predict liver cirrhosis from patient health data, supporting clinicians in early detection and care planning.
+                <br>
+                <i class="bi bi-lightbulb text-warning"></i>
+                <span class="text-muted">For educational and research use only.</span>
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <h5>Our Team</h5>
+            <ul>
+                <li><b>[Your Name]</b> – Lead Developer</li>
+                <li><b>[Co-author]</b> – Data Scientist</li>
+            </ul>
+            <h5 class="mt-4">Supervised by</h5>
+            <p>[Mentor/Professor Name]</p>
+        </div>
+        <div class="col-md-6">
+            <h5>Contact</h5>
+            <ul>
+                <li><i class="bi bi-envelope"></i> <a href="mailto:your@email.com">your@email.com</a></li>
+                <li><i class="bi bi-github"></i> <a href="https://github.com/yourusername" target="_blank">GitHub</a></li>
+                <li><i class="bi bi-linkedin"></i> <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <h5 class="mt-4">Project Timeline</h5>
+    <ul>
+        <li><b>Data Collection & Cleaning</b> <span class="badge bg-secondary">Week 1</span></li>
+        <li><b>Model Training</b> <span class="badge bg-secondary">Week 2</span></li>
+        <li><b>Web App Development</b> <span class="badge bg-secondary">Week 3</span></li>
+        <li><b>Testing & Deployment</b> <span class="badge bg-secondary">Week 4</span></li>
+    </ul>
+</div>
+{% endblock %}

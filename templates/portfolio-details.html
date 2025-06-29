@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Model Info | Liver Cirrhosis ML{% endblock %}
+{% block content %}
+<div class="main-card shadow p-4" data-aos="fade-up">
+    <h2>Model Details</h2>
+    <div class="mb-2">
+        <span class="badge bg-primary">XGBoost</span>
+        <span class="badge bg-primary">Grid Search</span>
+        <span class="badge bg-primary">Metrics</span>
+    </div>
+    <ul class="mb-3">
+        <li><b>Model:</b> XGBoost Classifier (best after Grid Search)</li>
+        <li><b>Performance:</b> 92% Accuracy (test set)</li>
+        <li><b>Metrics:</b> Accuracy, Precision, Recall, F1, Confusion Matrix</li>
+        <li><b>Features:</b> 35 health/biomarker variables</li>
+        <li><b>Hyperparameters Tuned:</b> n_estimators, max_depth, learning_rate, subsample</li>
+    </ul>
+    <h5 class="mt-4">Model Diagram</h5>
+    <img src="https://i.imgur.com/XhQjUvY.png" class="img-fluid rounded shadow mb-3" alt="Model Architecture Example">
+    <p class="text-muted">[Replace with your actual model or EDA chart if you want]</p>
+    <hr>
+    <h5>How to Use</h5>
+    <ol>
+        <li>Go to the Predict page</li>
+        <li>Fill all required fields</li>
+        <li>Click <b>Predict</b> to see the result and model confidence</li>
+    </ol>
+</div>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Liver Cirrhosis Predictor{% endblock %}
+{% block content %}
+    <h2 class="text-center text-primary mb-3">Liver Cirrhosis Prediction</h2>
+    <p class="text-center text-muted mb-4">Enter patient details below. <b>All fields are required.</b></p>
+    <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-outline-primary btn-sm" id="autofillBtn">
+            <i class="bi bi-lightning-charge"></i> Autofill Example Patient
+        </button>
+    </div>
+    {% include "form_section.html" %}
+    {% include "result_section.html" %}
+    <div class="mt-4 text-center text-muted" style="font-size: 0.96em;">
+        <i class="bi bi-lightbulb"></i> All data is private and never saved.
+    </div>
+    {% include "charts_section.html" %}
+{% endblock %}
+{% block scripts %}
+
+<script>
+    // Enable all Bootstrap tooltips on the page
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Show result modal if prediction_text exists
+        {% if prediction_text %}
+            var resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+            resultModal.show();
+        {% endif %}
+
+        // PDF/Print Report (now works from inside the modal)
+        const btn = document.getElementById("downloadReportBtn");
+        if (btn) {
+            btn.onclick = function() {
+                let rows = '';
+                document.querySelectorAll('form [name]').forEach(input => {
+                    let label = input.closest('.mb-3')?.querySelector('.form-label')?.innerText || input.name;
+                    rows += `<tr><td>${label}</td><td>${input.value}</td></tr>`;
+                });
+                let prediction = document.querySelector('#resultModal .modal-body h4')?.innerText || '';
+                let now = new Date().toLocaleString();
+                let html = `
+                    <html>
+                    <head>
+                        <title>Liver Cirrhosis Prediction Report</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                    </head>
+                    <body class="p-4">
+                        <h2 class="mb-3">Liver Cirrhosis Prediction Report</h2>
+                        <p><b>Generated:</b> ${now}</p>
+                        <hr>
+                        <h4>Prediction:</h4>
+                        <div class="alert alert-info">${prediction}</div>
+                        <h5>Patient Data:</h5>
+                        <table class="table table-bordered table-sm w-75">
+                            <tbody>${rows}</tbody>
+                        </table>
+                        <hr>
+                        <p class="small text-muted">Model: XGBoost Ensemble | Project by [Your Name]</p>
+                    </body>
+                    </html>
+                `;
+                let w = window.open('', '_blank');
+                w.document.write(html);
+                w.document.close();
+                setTimeout(() => w.print(), 500);
+            };
+        }
+
+        // CSV EXPORT: Save each prediction to localStorage, and handle download button
+        {% if prediction_text %}
+            // Gather input data as an object
+            const patientData = {};
+            document.querySelectorAll('form [name]').forEach(input => {
+                let label = input.closest('.mb-3')?.querySelector('.form-label')?.innerText || input.name;
+                patientData[label.trim()] = input.value;
+            });
+            // Also store the prediction and date
+            patientData["Prediction"] = document.querySelector('#resultModal .modal-body h4')?.innerText || '';
+            patientData["Date"] = new Date().toLocaleString();
+            // Get array from localStorage or empty
+            let predictions = JSON.parse(localStorage.getItem('predictions') || '[]');
+            predictions.push(patientData);
+            localStorage.setItem('predictions', JSON.stringify(predictions));
+        {% endif %}
+
+        const csvBtn = document.getElementById("downloadCSVBtn");
+        if (csvBtn) {
+            csvBtn.onclick = function() {
+                let predictions = JSON.parse(localStorage.getItem('predictions') || '[]');
+                if (!predictions.length) {
+                    alert("No data to export yet!");
+                    return;
+                }
+                // Get all unique keys as columns
+                const columns = Array.from(
+                    predictions.reduce((set, row) => {
+                        Object.keys(row).forEach(k => set.add(k));
+                        return set;
+                    }, new Set())
+                );
+                // Build CSV string
+                let csv = columns.join(',') + '\n';
+                predictions.forEach(row => {
+                    csv += columns.map(col => JSON.stringify(row[col] || '')).join(',') + '\n';
+                });
+                // Download as file
+                const blob = new Blob([csv], {type: "text/csv"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "predictions.csv";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Feature Importance Chart (top 10)
+        {% if feat_importance %}
+            const feat_importance = {{ feat_importance|tojson }};
+            const sortedFeat = Object.entries(feat_importance).sort((a,b)=>b[1]-a[1]).slice(0,10);
+            const labels = sortedFeat.map(x=>x[0]);
+            const data = sortedFeat.map(x=>x[1]);
+            const ctx = document.getElementById('featureImportanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{ label: 'Importance', data: data, backgroundColor: '#2196f3' }]
+                },
+                options: { indexAxis: 'y', scales: { x: { beginAtZero: true } } }
+            });
+        {% endif %}
+    });
+
+    // Autofill Example Patient Button
+    document.getElementById("autofillBtn").onclick = function() {
+        const example = {
+            "Age": 52, "Gender": "0", "Place(location where the patient lives)": "1",
+            "Duration of alcohol consumption(years)": 20, "Quantity of alcohol consumption (quarters/day)": 2,
+            "Type of alcohol consumed": "0", "Hepatitis B infection": "0", "Hepatitis C infection": "0",
+            "Diabetes Result": "0", "Blood pressure (mmhg)": 110, "Obesity": "0",
+            "Family history of cirrhosis/ hereditary": "1", "TCH": 180, "TG": 120, "LDL": 90, "HDL": 44,
+            "Hemoglobin  (g/dl)": 12, "PCV  (%)": 36, "MCV   (femtoliters/cell)": 80, "Total Count": 5000,
+            "Polymorphs  (%) ": 60, "Lymphocytes  (%)": 30, "Monocytes   (%)": 5, "Eosinophils   (%)": 2,
+            "Basophils  (%)": 1, "Platelet Count  (lakhs/mm)": 2.0, "Total Bilirubin    (mg/dl)": 0.7,
+            "Direct    (mg/dl)": 0.2, "Indirect     (mg/dl)": 0.5, "Total Protein     (g/dl)": 6.5,
+            "Albumin   (g/dl)": 3.5, "Globulin  (g/dl)": 3.0, "AL.Phosphatase      (U/L)": 78,
+            "SGOT/AST      (U/L)": 36, "SGPT/ALT (U/L)": 38, "USG Abdomen (diffuse liver or  not)": "0"
+        };
+        Object.entries(example).forEach(([name, value]) => {
+            let input = document.querySelector(`[name="${name}"]`);
+            if (input) input.value = value;
+        });
+    };
+
+    // Spinner on submit
+    document.getElementById('predictForm').onsubmit = function() {
+        document.getElementById('btnText').innerText = "Predicting...";
+        document.getElementById('loadingSpinner').classList.remove("d-none");
+        setTimeout(showInputChart, 800);
+    };
+
+    // Input Visualizations: Liver Enzyme Chart
+    function showInputChart() {
+        const fields = [
+            "AL.Phosphatase      (U/L)",
+            "SGOT/AST      (U/L)",
+            "SGPT/ALT (U/L)"
+        ];
+        const values = fields.map(f => document.querySelector(`[name="${f}"]`).value);
+        if (values.every(v=>v)) {
+            const ctx = document.getElementById('inputVizChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Alkaline Phosphatase", "SGOT/AST", "SGPT/ALT"],
+                    datasets: [{
+                        label: "Value",
+                        data: values,
+                        backgroundColor: ['#43a047','#fbc02d','#e53935']
+                    }]
+                },
+                options: { scales: { y: { beginAtZero:true }} }
+            });
+        }
+    }
+</script>
+
+<script>
+// Real-time validation for all required and numeric fields
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('#predictForm input[required], #predictForm select[required]').forEach(function(input) {
+        input.addEventListener('input', function() {
+            if (input.validity.valid) {
+                input.classList.remove('is-invalid');
+            } else {
+                input.classList.add('is-invalid');
+            }
+        });
+    });
+
+    // Prevent submit if there are invalid fields
+    document.getElementById('predictForm').addEventListener('submit', function(e) {
+        let valid = true;
+        document.querySelectorAll('#predictForm input[required], #predictForm select[required]').forEach(function(input) {
+            if (!input.validity.valid) {
+                input.classList.add('is-invalid');
+                valid = false;
+            }
+        });
+        if (!valid) {
+            e.preventDefault();
+            alert("Please fill out all required fields correctly.");
+            document.getElementById('btnText').innerText = "Predict";
+            document.getElementById('loadingSpinner').classList.add("d-none");
+        }
+    });
+});
+</script>
+{% endblock %}

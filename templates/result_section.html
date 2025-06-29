@@ -1,0 +1,24 @@
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="resultModalLabel">Prediction Result</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        {% if prediction_text %}
+          <h4>{{ prediction_text }}</h4>
+          <button type="button" id="downloadReportBtn" class="btn btn-outline-secondary mt-3">
+    <i class="bi bi-file-earmark-pdf"></i> Download/Print Report
+</button>
+<button type="button" id="downloadCSVBtn" class="btn btn-outline-primary mt-2 ms-2">
+    <i class="bi bi-download"></i> Download All as CSV
+</button>
+        {% else %}
+          <p class="text-muted">No prediction available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

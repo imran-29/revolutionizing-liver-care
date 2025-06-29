@@ -1,0 +1,426 @@
+<form method="POST" action="/predict" id="predictForm">
+    <!-- Patient Information -->
+    <div class="form-section-title">Patient Information</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Age
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Patient's age in years."></i>
+            </label>
+            <input type="number" class="form-control" name="Age" min="1" max="120" required>
+            <div class="invalid-feedback">Please enter a valid age (1–120).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Gender
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Select the patient's gender."></i>
+            </label>
+            <select class="form-select" name="Gender" required>
+                <option value="">Select</option>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+                <option value="2">Transgender</option>
+            </select>
+            <div class="invalid-feedback">Please select the patient's gender.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Place
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Patient's place of residence: Rural or Urban."></i>
+            </label>
+            <select class="form-select" name="Place(location where the patient lives)" required>
+                <option value="">Select</option>
+                <option value="0">Rural</option>
+                <option value="1">Urban</option>
+                <option value="2">Unknown</option>
+            </select>
+            <div class="invalid-feedback">Please select place of residence.</div>
+        </div>
+    </div>
+
+    <!-- Alcohol & Lifestyle -->
+    <div class="form-section-title">Alcohol & Lifestyle</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Alcohol (years)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="How many years has the patient consumed alcohol?"></i>
+            </label>
+            <input type="number" class="form-control" name="Duration of alcohol consumption(years)" min="0" max="80" required>
+            <div class="invalid-feedback">Enter years of alcohol consumption (0–80).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Alcohol (quarters/day)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Average quantity of alcohol consumed per day (in quarters)."></i>
+            </label>
+            <input type="number" class="form-control" name="Quantity of alcohol consumption (quarters/day)" min="0" max="10" required>
+            <div class="invalid-feedback">Enter quantity per day (0–10 quarters).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Type of Alcohol
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Type of alcohol usually consumed."></i>
+            </label>
+            <select class="form-select" name="Type of alcohol consumed" required>
+                <option value="">Select</option>
+                <option value="0">Branded Liquor</option>
+                <option value="1">Both</option>
+                <option value="2">Country Liquor</option>
+            </select>
+            <div class="invalid-feedback">Please select the type of alcohol.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Hepatitis B Infection
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Has the patient tested positive for Hepatitis B infection?"></i>
+            </label>
+            <select class="form-select" name="Hepatitis B infection" required>
+                <option value="">Select</option>
+                <option value="0">Negative</option>
+                <option value="1">Positive</option>
+            </select>
+            <div class="invalid-feedback">Please select Hepatitis B infection status.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Hepatitis C Infection
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Has the patient tested positive for Hepatitis C infection?"></i>
+            </label>
+            <select class="form-select" name="Hepatitis C infection" required>
+                <option value="">Select</option>
+                <option value="0">Negative</option>
+                <option value="1">Positive</option>
+            </select>
+            <div class="invalid-feedback">Please select Hepatitis C infection status.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Obesity
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Does the patient have obesity as per medical records?"></i>
+            </label>
+            <select class="form-select" name="Obesity" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+            <div class="invalid-feedback">Please select obesity status.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Family History of Cirrhosis/Hereditary
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Does anyone in the patient's family have a history of cirrhosis?"></i>
+            </label>
+            <select class="form-select" name="Family history of cirrhosis/ hereditary" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+                <option value="2">Unknown</option>
+            </select>
+            <div class="invalid-feedback">Please select family history status.</div>
+        </div>
+    </div>
+
+    <!-- Medical History -->
+    <div class="form-section-title">Medical History</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Diabetes
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Does the patient have diabetes?"></i>
+            </label>
+            <select class="form-select" name="Diabetes Result" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+            <div class="invalid-feedback">Please select diabetes status.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Blood Pressure (mmHg)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Current blood pressure measurement in mmHg."></i>
+            </label>
+            <input type="number" class="form-control" name="Blood pressure (mmhg)" min="50" max="250" required>
+            <div class="invalid-feedback">Enter valid blood pressure (50–250 mmHg).</div>
+        </div>
+    </div>
+
+    <!-- Blood Test Results -->
+    <div class="form-section-title">Blood Test Results</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                TCH
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Total Cholesterol (mg/dL)."></i>
+            </label>
+            <input type="number" class="form-control" name="TCH" min="50" max="500" required>
+            <div class="invalid-feedback">Enter TCH (50–500 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                TG
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Triglycerides (mg/dL)."></i>
+            </label>
+            <input type="number" class="form-control" name="TG" min="10" max="500" required>
+            <div class="invalid-feedback">Enter TG (10–500 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                LDL
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Low-Density Lipoprotein (mg/dL)."></i>
+            </label>
+            <input type="number" class="form-control" name="LDL" min="10" max="400" required>
+            <div class="invalid-feedback">Enter LDL (10–400 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                HDL
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="High-Density Lipoprotein (mg/dL)."></i>
+            </label>
+            <input type="number" class="form-control" name="HDL" min="5" max="200" required>
+            <div class="invalid-feedback">Enter HDL (5–200 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Hemoglobin (g/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Hemoglobin level in grams per deciliter."></i>
+            </label>
+            <input type="number" class="form-control" name="Hemoglobin  (g/dl)" min="2" max="20" required>
+            <div class="invalid-feedback">Enter hemoglobin (2–20 g/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                PCV (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Packed Cell Volume (percentage)."></i>
+            </label>
+            <input type="number" class="form-control" name="PCV  (%)" min="10" max="70" required>
+            <div class="invalid-feedback">Enter PCV (10–70%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                MCV (femtoliters/cell)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Mean Corpuscular Volume (fL/cell)."></i>
+            </label>
+            <input type="number" class="form-control" name="MCV   (femtoliters/cell)" min="30" max="130" required>
+            <div class="invalid-feedback">Enter MCV (30–130 fL/cell).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Total Count
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Total white blood cell count (cells per mm³)."></i>
+            </label>
+            <input type="number" class="form-control" name="Total Count" min="1000" max="20000" required>
+            <div class="invalid-feedback">Enter Total Count (1000–20000/mm³).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Polymorphs (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Percentage of polymorphonuclear cells."></i>
+            </label>
+            <input type="number" class="form-control" name="Polymorphs  (%) " min="10" max="90" required>
+            <div class="invalid-feedback">Enter Polymorphs (10–90%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Lymphocytes (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Percentage of lymphocyte cells."></i>
+            </label>
+            <input type="number" class="form-control" name="Lymphocytes  (%)" min="5" max="60" required>
+            <div class="invalid-feedback">Enter Lymphocytes (5–60%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Monocytes (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Percentage of monocyte cells."></i>
+            </label>
+            <input type="number" class="form-control" name="Monocytes   (%)" min="0" max="15" required>
+            <div class="invalid-feedback">Enter Monocytes (0–15%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Eosinophils (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Percentage of eosinophil cells."></i>
+            </label>
+            <input type="number" class="form-control" name="Eosinophils   (%)" min="0" max="10" required>
+            <div class="invalid-feedback">Enter Eosinophils (0–10%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Basophils (%)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Percentage of basophil cells."></i>
+            </label>
+            <input type="number" class="form-control" name="Basophils  (%)" min="0" max="2" required>
+            <div class="invalid-feedback">Enter Basophils (0–2%).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Platelet Count (lakhs/mm)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Number of platelets in lakhs per mm³."></i>
+            </label>
+            <input type="number" class="form-control" name="Platelet Count  (lakhs/mm)" min="0.5" max="10" step="0.01" required>
+            <div class="invalid-feedback">Enter Platelet Count (0.5–10 lakhs/mm³).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Total Bilirubin (mg/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Total bilirubin level in mg/dL."></i>
+            </label>
+            <input type="number" class="form-control" name="Total Bilirubin    (mg/dl)" min="0.1" max="50" step="0.01" required>
+            <div class="invalid-feedback">Enter Total Bilirubin (0.1–50 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Direct (mg/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Direct (conjugated) bilirubin in mg/dL."></i>
+            </label>
+            <input type="number" class="form-control" name="Direct    (mg/dl)" min="0" max="20" step="0.01" required>
+            <div class="invalid-feedback">Enter Direct Bilirubin (0–20 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Indirect (mg/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Indirect (unconjugated) bilirubin in mg/dL."></i>
+            </label>
+            <input type="number" class="form-control" name="Indirect     (mg/dl)" min="0" max="30" step="0.01" required>
+            <div class="invalid-feedback">Enter Indirect Bilirubin (0–30 mg/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Total Protein (g/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Total protein level in grams per deciliter."></i>
+            </label>
+            <input type="number" class="form-control" name="Total Protein     (g/dl)" min="3" max="12" step="0.01" required>
+            <div class="invalid-feedback">Enter Total Protein (3–12 g/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Albumin (g/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Albumin level in grams per deciliter."></i>
+            </label>
+            <input type="number" class="form-control" name="Albumin   (g/dl)" min="1" max="7" step="0.01" required>
+            <div class="invalid-feedback">Enter Albumin (1–7 g/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                Globulin (g/dl)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Globulin level in grams per deciliter."></i>
+            </label>
+            <input type="number" class="form-control" name="Globulin  (g/dl)" min="1" max="7" step="0.01" required>
+            <div class="invalid-feedback">Enter Globulin (1–7 g/dL).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                AL.Phosphatase (U/L)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Alkaline phosphatase enzyme level in U/L."></i>
+            </label>
+            <input type="number" class="form-control" name="AL.Phosphatase      (U/L)" min="20" max="1200" required>
+            <div class="invalid-feedback">Enter AL.Phosphatase (20–1200 U/L).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                SGOT/AST (U/L)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Aspartate transaminase (SGOT/AST) enzyme level in U/L."></i>
+            </label>
+            <input type="number" class="form-control" name="SGOT/AST      (U/L)" min="10" max="1200" required>
+            <div class="invalid-feedback">Enter SGOT/AST (10–1200 U/L).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                SGPT/ALT (U/L)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Alanine transaminase (SGPT/ALT) enzyme level in U/L."></i>
+            </label>
+            <input type="number" class="form-control" name="SGPT/ALT (U/L)" min="10" max="1200" required>
+            <div class="invalid-feedback">Enter SGPT/ALT (10–1200 U/L).</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">
+                USG Abdomen (diffuse liver or not)
+                <i class="bi bi-question-circle-fill text-info ms-1"
+                   data-bs-toggle="tooltip"
+                   title="Ultrasound result: Is liver diffuse?"></i>
+            </label>
+            <select class="form-select" name="USG Abdomen (diffuse liver or  not)" required>
+                <option value="">Select</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+                <option value="2">Unknown</option>
+            </select>
+            <div class="invalid-feedback">Please select ultrasound result.</div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success btn-lg mt-3 w-100 sticky-mobile-btn" id="predictBtn">
+        <span id="btnText">Predict</span>
+        <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner"></span>
+    </button>
+</form>
