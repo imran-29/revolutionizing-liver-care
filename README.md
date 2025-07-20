@@ -6,6 +6,8 @@ Built with Flask and an XGBoost model, the app provides real-time predictions wi
 
 ---
 
+- Demo Link: https://drive.google.com/file/d/1UrIZTjKhMTg9V_ktF3MM3wJ9PVCXUaDJ/view?usp=drive_link
+- 
 ## 🚀 Key Features
 
 - 🧠 **ML-Based Prediction**: Uses an XGBoost model trained on medical data.
