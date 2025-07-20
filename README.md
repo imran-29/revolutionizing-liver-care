@@ -93,6 +93,6 @@ Example autofill data for quick testing.
 ✨ Example Prediction
 Prediction: Patient is likely to have liver cirrhosis.
 
-Confidence: 87.6%
+Confidence: 97.6%
 
 Key Factors: Duration of alcohol consumption, Total Bilirubin, USG results.
